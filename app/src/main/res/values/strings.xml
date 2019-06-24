@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">myKotlinSalad</string>
+    <string name="weather_activity">Weather</string>
+    <string name="home_camera_activity">Kitty Cam</string>
+    <string name="backButton">Back to Menu</string>
+    <string name="location_text">Location:</string>
+    <string name="temperature_text">Temperature:</string>
+    <string name="humidity_text">Humidity:</string>
+    <string name="status_text">Status:</string>
+    <string name="empty_text">--</string>
+    <string name="change_city_text">You can change your city name here:</string>
+    <string name="update_text">Update</string>
+</resources>

@@ -15,4 +15,8 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this, forecastActivity::class.java)
         startActivity(intent)
     }
+    fun openLiveView(view: View){
+        val intent = Intent(this, liveCamActivity::class.java)
+        startActivity(intent)
+    }
 }

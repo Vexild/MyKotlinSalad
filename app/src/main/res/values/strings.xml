@@ -10,4 +10,6 @@
     <string name="empty_text">--</string>
     <string name="change_city_text">You can change your city name here:</string>
     <string name="update_text">Update</string>
+    <string name="live_cam_text">Live camera</string>
+    <string name="korkeasaari_text">Korkeasaari: Africasia- talon mangustit</string>
 </resources>

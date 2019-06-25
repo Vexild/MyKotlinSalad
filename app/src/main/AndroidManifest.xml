@@ -15,6 +15,8 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             android:usesCleartextTraffic="true">
+        <activity android:name=".liveCamActivity">
+        </activity>
         <activity android:name=".GPSactivity">
         </activity>
         <activity android:name=".forecastActivity">

@@ -12,4 +12,7 @@
     <string name="update_text">Update</string>
     <string name="live_cam_text">Live camera</string>
     <string name="korkeasaari_text">Korkeasaari: Africasia- talon mangustit</string>
+    <string name="gps_location_button">GPS Location</string>
+    <string name="gps_description">Your current location is: </string>
+    <string name="search_text">Search</string>
 </resources>

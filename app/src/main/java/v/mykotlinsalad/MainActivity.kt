@@ -19,4 +19,8 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this, liveCamActivity::class.java)
         startActivity(intent)
     }
+    fun openGPSLocation(view: View){
+        val intent = Intent(this, GPSLocationActivity::class.java)
+        startActivity(intent)
+    }
 }

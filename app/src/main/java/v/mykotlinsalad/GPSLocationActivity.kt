@@ -24,7 +24,6 @@ import org.json.JSONObject
 class GPSLocationActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
-
     var myDb = databaseHelper(this, null)
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     val apiKey = "bff78d1e25c341ad884080598125bf67"
@@ -48,20 +47,23 @@ class GPSLocationActivity : AppCompatActivity(), OnMapReadyCallback {
         val cursor = myDb.getAllCoordinates()
         cursor!!.moveToFirst()
         Log.i("GPS OnCreate", "Coordinates: ")
-        while(cursor.moveToNext()){
-            var response = "LATITUDE: " + cursor.getString(1)+", LONGITUDE: "+ cursor.getString(2)+" CITY: "+ cursor.getString(3).toString()+" COUNTRY: "+cursor.getString(4).toString()
+        while (cursor.moveToNext()) {
+            var response =
+                "LATITUDE: " + cursor.getString(1) + ", LONGITUDE: " + cursor.getString(2) + " CITY: " + cursor.getString(
+                    3
+                ).toString() + " COUNTRY: " + cursor.getString(4).toString()
             Log.i("GPS OnCreate", response)
-            var responseLocation = LatLng(cursor.getString(1).toDouble(),cursor.getString(2).toDouble())
+            var responseLocation = LatLng(cursor.getString(1).toDouble(), cursor.getString(2).toDouble())
             Log.i("GPS OnCreate End", responseLocation.toString())
-            mMap.addMarker(MarkerOptions().position(responseLocation).title("Visited in "+cursor.getString(3)+", "+cursor.getString(4)))
-
+            mMap.addMarker(
+                MarkerOptions().position(responseLocation).title(
+                    "Visited in " + cursor.getString(3) + ", " + cursor.getString(4))
+            )
         }
 
         // ASETETAAN LISTENERI LONGPRESSEILLE
         mMap.setOnMapLongClickListener(GoogleMap.OnMapLongClickListener { coordinates: LatLng ->
-            Log.i("GPS OnCreate End", "Coordinates: "+coordinates)
-
-
+           
             // Joka longpressillä tehdään api call. tämä vain testaus mielessä
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
             fusedLocationClient.lastLocation.addOnCompleteListener {
@@ -80,25 +82,32 @@ class GPSLocationActivity : AppCompatActivity(), OnMapReadyCallback {
                     Coordinates(coordinates.longitude, coordinates.latitude, cityName.toString(), country.toString())
                 myDb.insertCoordinates(data)
             }
-            mMap.addMarker(MarkerOptions().position(coordinates).title("Visited in "+cityName.toString()+", "+country.toString()))
-            Log.i("GPS OnCreate", "Data saved to database" )
+            mMap.addMarker(MarkerOptions().position(coordinates).title("Visited in " + cityName.toString() + ", " + country.toString()))
+            Log.i("GPS OnCreate", "Data saved to database")
         })
     }
 
 
-    @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_gpslocation)
+        /*
+         ACCESS_FINE_LOCATION
+         INTERNET
+         ACCESS_NETWORK_STATE
+         ACCESS_COARSE_LOCATION
+         */
+
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.mapView2) as SupportMapFragment
         mapFragment.getMapAsync(this)
     }
-    @SuppressLint("MissingPermission")
-    fun search(view: View){
 
-        Log.i("SearchButton","Search pressed")
-        searchGPSlocationButton.isClickable= false
+    @SuppressLint("MissingPermission")
+    fun search(view: View) {
+
+        Log.i("SearchButton", "Search pressed")
+        searchGPSlocationButton.isClickable = false
         // CREATE PERMISSION FOR USE OF GPS
         // in current build, you need to allow myKotlinSalad use GPS manually (settings -> search myKotlinSalad -> permissions -> gps toggle on)
 
@@ -128,27 +137,29 @@ class GPSLocationActivity : AppCompatActivity(), OnMapReadyCallback {
 
                 Log.i("Location City: ", cityName)
                 Log.i("Location Country: ", country)
-                val NewMarker = LatLng(lat,lon)
-                mMap.addMarker(MarkerOptions().position(NewMarker).title("Visited in "+cityName.toString()+", "+country.toString()))
+                val NewMarker = LatLng(lat, lon)
+                mMap.addMarker(MarkerOptions().position(NewMarker).title("Visited in " + cityName.toString() + ", " + country.toString()))
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(NewMarker))
 
             }, Response.ErrorListener { Log.e("GPS", "Error in GPSLocationActivity") })
             queue.add(stringRequest)
 
 
-            val data = Coordinates(lon,lat,cityName.toString(), country.toString())
+            val data = Coordinates(lon, lat, cityName.toString(), country.toString())
             myDb.insertCoordinates(data)
-            gpsTitle.text = (lon.toString()+", "+lat.toString()+" "+cityName.toString()+" "+country.toString())
+            gpsTitle.text =
+                (lon.toString() + ", " + lat.toString() + " " + cityName.toString() + " " + country.toString())
 
         }
-        searchGPSlocationButton.isClickable= true
+        searchGPSlocationButton.isClickable = true
     }
 
-    fun clearDb(view: View){
+    fun clearDb(view: View) {
         myDb.deleteAllCoordinates()
         mMap.clear()
     }
-}
 
+
+}
 
 

@@ -23,4 +23,5 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this, GPSLocationActivity::class.java)
         startActivity(intent)
     }
+
 }

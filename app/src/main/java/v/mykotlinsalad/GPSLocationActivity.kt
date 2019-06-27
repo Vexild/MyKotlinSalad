@@ -33,19 +33,56 @@ class GPSLocationActivity : AppCompatActivity(), OnMapReadyCallback {
 
     var cityName: String? = ""
     var country: String? = ""
-
+    val startingPoint = LatLng(65.009009009009, 25.50388924350585)
 
     private lateinit var mMap: GoogleMap
 
+    @SuppressLint("MissingPermission")
     override fun onMapReady(googleMap: GoogleMap) {
         Log.i("onMapRedu", "Function start")
-        mMap = googleMap
 
-        val startingPoint = LatLng(65.009009009009, 25.50388924350585)
-        /*
-        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))*/
+        mMap = googleMap
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(startingPoint, 5.5.toFloat()))
+
+        // HAETAAN KAIKKI LOKAATION KANNASTA
+        val cursor = myDb.getAllCoordinates()
+        cursor!!.moveToFirst()
+        Log.i("GPS OnCreate", "Coordinates: ")
+        while(cursor.moveToNext()){
+            var response = "LATITUDE: " + cursor.getString(1)+", LONGITUDE: "+ cursor.getString(2)+" CITY: "+ cursor.getString(3).toString()+" COUNTRY: "+cursor.getString(4).toString()
+            Log.i("GPS OnCreate", response)
+            var responseLocation = LatLng(cursor.getString(1).toDouble(),cursor.getString(2).toDouble())
+            Log.i("GPS OnCreate End", responseLocation.toString())
+            mMap.addMarker(MarkerOptions().position(responseLocation).title("Visited in "+cursor.getString(3)+", "+cursor.getString(4)))
+
+        }
+
+        // ASETETAAN LISTENERI LONGPRESSEILLE
+        mMap.setOnMapLongClickListener(GoogleMap.OnMapLongClickListener { coordinates: LatLng ->
+            Log.i("GPS OnCreate End", "Coordinates: "+coordinates)
+
+
+            // Joka longpressillä tehdään api call. tämä vain testaus mielessä
+            fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+            fusedLocationClient.lastLocation.addOnCompleteListener {
+                val queue = Volley.newRequestQueue(this)
+                val url =
+                    "https://api.openweathermap.org/data/2.5/weather?lat=" + coordinates.latitude.toString() + "&lon=" + coordinates.longitude.toString() + "&appid=" + apiKey
+                val stringRequest = StringRequest(Request.Method.GET, url, Response.Listener<String> { response ->
+
+                    cityName = JSONObject(response).getString("name").toString()
+                    //gpsDescription.text = JSONObject(response).toString()
+                    country = JSONObject(response).getJSONObject("sys").getString("country").toString()
+
+                }, Response.ErrorListener { Log.e("GPS", "Error in loading old locations") })
+                queue.add(stringRequest)
+                var data =
+                    Coordinates(coordinates.longitude, coordinates.latitude, cityName.toString(), country.toString())
+                myDb.insertCoordinates(data)
+            }
+            mMap.addMarker(MarkerOptions().position(coordinates).title("Visited in "+cityName.toString()+", "+country.toString()))
+            Log.i("GPS OnCreate", "Data saved to database" )
+        })
     }
 
 
@@ -53,13 +90,9 @@ class GPSLocationActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_gpslocation)
-        Log.i("onCreate In Maps", "Checkpoint1")
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.mapView2) as SupportMapFragment
-        Log.i("onCreate In Maps", "Checkpoint2")
         mapFragment.getMapAsync(this)
-        // create local db if none exists and CREATE_TABLE = "CREATE TABLE $LOCATIONS ($ID Integer PRIMARY KEY AUTOINCREMENT, $LON, $LAT, $CITY, $COUNTRY)"
-
     }
     @SuppressLint("MissingPermission")
     fun search(view: View){
@@ -72,8 +105,6 @@ class GPSLocationActivity : AppCompatActivity(), OnMapReadyCallback {
         // create all mandatory things for GPS location
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-
-
             if (location != null) {
                 lon = location.longitude.toDouble()
             }
@@ -81,13 +112,11 @@ class GPSLocationActivity : AppCompatActivity(), OnMapReadyCallback {
                 lat = location.latitude.toDouble()
             }
         }
-
         fusedLocationClient.lastLocation.addOnCompleteListener {
             // get the city name
             val queue = Volley.newRequestQueue(this)
             val url =
                 "https://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "&appid=" + apiKey
-
 
             Log.d("Lon form GPSLocation", lon.toString())
             Log.d("Lat form GPSLocation", lat.toString())
@@ -100,41 +129,25 @@ class GPSLocationActivity : AppCompatActivity(), OnMapReadyCallback {
                 Log.i("Location City: ", cityName)
                 Log.i("Location Country: ", country)
                 val NewMarker = LatLng(lat,lon)
-                mMap.addMarker(MarkerOptions().position(NewMarker).title("Marker in "+cityName.toString()+", "+country.toString()))
+                mMap.addMarker(MarkerOptions().position(NewMarker).title("Visited in "+cityName.toString()+", "+country.toString()))
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(NewMarker))
 
             }, Response.ErrorListener { Log.e("GPS", "Error in GPSLocationActivity") })
             queue.add(stringRequest)
 
-            // display all points from db to map
-            // Add a marker in Sydney and move the camera
 
-
-
-
-            // take lon and lat and insert them into DB in form (id, lon, lat, city)7
-            //myDb.deleteAllCoordinates()
-            val data = Coordinates(lat,lon,cityName.toString(), country.toString())
+            val data = Coordinates(lon,lat,cityName.toString(), country.toString())
             myDb.insertCoordinates(data)
+            gpsTitle.text = (lon.toString()+", "+lat.toString()+" "+cityName.toString()+" "+country.toString())
 
-
-            val cursor = myDb.getAllCoordinates()
-            cursor!!.moveToFirst()
-            //gpsDescription.append((cursor.getString(cursor.getColumnIndex(databaseHelper.ID))))
-            while (cursor.moveToNext()) {
-                myDb.deleteAllCoordinates()
-
-               // Log.i("DATABASE"," LATTITUDE: " + cursor.getString(cursor.getColumnIndex(databaseHelper.ID)))
-                //Log.i("DATABASE"," LONGITUDE: " + cursor.getString(cursor.getColumnIndex(databaseHelper.LON)))
-                val response = "LATITUDE: " + cursor.getString(1)+", LONGITUDE: "+ cursor.getString(2)+" CITY: "+ cursor.getString(3).toString()+" COUNTRY: "+cursor.getString(4).toString()
-                Log.i("DATABASE"," LATITUDE: " + cursor.getString(1)+", LONGITUDE: "+ cursor.getString(2)+" CITY: "+ cursor.getString(3).toString()+" COUNTRY: "+cursor.getString(4).toString())
-                gpsTitle.text = response
-            }
-            cursor.close()
         }
         searchGPSlocationButton.isClickable= true
-        }
+    }
 
+    fun clearDb(view: View){
+        myDb.deleteAllCoordinates()
+        mMap.clear()
+    }
 }
 
 

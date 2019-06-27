@@ -18,21 +18,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/gpsDescription"
-            android:text="@string/gps_description"
             app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
             app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"
-            app:layout_constraintHorizontal_bias="0.487" app:layout_constraintTop_toBottomOf="@+id/searchGPSlocationButton"/>
+            app:layout_constraintHorizontal_bias="0.487"
+            app:layout_constraintTop_toBottomOf="@+id/searchGPSlocationButton"/>
     <Button
             android:text="@string/search_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/searchGPSlocationButton" android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/gpsTitle" app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="8dp" app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="8dp" android:onClick="search"/>
+            app:layout_constraintTop_toBottomOf="@+id/gpsTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="8dp" android:onClick="search" android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toStartOf="@+id/clearDataBaseButton"/>
     <fragment
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="396dp"
+            android:layout_height="612dp"
             android:id="@+id/mapView2"
             android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -41,4 +42,12 @@
             android:name="com.google.android.gms.maps.SupportMapFragment"
             tools:context=".MapsActivity" android:layout_marginTop="8dp"
             app:layout_constraintTop_toBottomOf="@+id/gpsDescription"/>
+    <Button
+            android:text="@string/clear_db_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/clearDataBaseButton" app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@+id/gpsTitle"
+            android:onClick="clearDb"/>
 </android.support.constraint.ConstraintLayout>

@@ -45,8 +45,6 @@ class databaseHelper(context: Context, factory: SQLiteDatabase.CursorFactory?): 
         return db.rawQuery("SELECT * FROM $TABLE_NAME", null)
     }
 
-
-
     fun deleteAllCoordinates(): Int {
         val db = this.writableDatabase
         return db.delete("$TABLE_NAME",null,null)
@@ -54,6 +52,7 @@ class databaseHelper(context: Context, factory: SQLiteDatabase.CursorFactory?): 
     }
 
 }
+
 class Coordinates {
     var lat: Double? = null
     var lon: Double? = null
@@ -65,5 +64,4 @@ class Coordinates {
         this.city = city
         this.country = country
     }
-
 }

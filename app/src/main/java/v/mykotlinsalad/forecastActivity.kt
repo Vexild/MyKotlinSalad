@@ -23,12 +23,6 @@ class forecastActivity : AppCompatActivity() {
         getJson(apiKey, "Oulu")
     }
 
-    /*
-    fun getLocation(): String {
-        val targetLocation = "Oulu"
-        return targetLocation
-    }*/
-
     fun updateLocation(view: View){
         val newCity = new_city_text.text.toString()
         location.text = ""

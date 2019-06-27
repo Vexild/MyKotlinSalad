@@ -38,7 +38,7 @@ class GPSLocationActivity : AppCompatActivity(), OnMapReadyCallback {
 
     @SuppressLint("MissingPermission")
     override fun onMapReady(googleMap: GoogleMap) {
-        Log.i("onMapRedu", "Function start")
+        Log.i("onMapRedy", "Function start")
 
         mMap = googleMap
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(startingPoint, 5.5.toFloat()))
@@ -48,10 +48,7 @@ class GPSLocationActivity : AppCompatActivity(), OnMapReadyCallback {
         cursor!!.moveToFirst()
         Log.i("GPS OnCreate", "Coordinates: ")
         while (cursor.moveToNext()) {
-            var response =
-                "LATITUDE: " + cursor.getString(1) + ", LONGITUDE: " + cursor.getString(2) + " CITY: " + cursor.getString(
-                    3
-                ).toString() + " COUNTRY: " + cursor.getString(4).toString()
+            var response = "LATITUDE: " + cursor.getString(1) + ", LONGITUDE: " + cursor.getString(2) + " CITY: " + cursor.getString(3).toString() + " COUNTRY: " + cursor.getString(4).toString()
             Log.i("GPS OnCreate", response)
             var responseLocation = LatLng(cursor.getString(1).toDouble(), cursor.getString(2).toDouble())
             Log.i("GPS OnCreate End", responseLocation.toString())
@@ -63,7 +60,7 @@ class GPSLocationActivity : AppCompatActivity(), OnMapReadyCallback {
 
         // ASETETAAN LISTENERI LONGPRESSEILLE
         mMap.setOnMapLongClickListener(GoogleMap.OnMapLongClickListener { coordinates: LatLng ->
-           
+
             // Joka longpressillä tehdään api call. tämä vain testaus mielessä
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
             fusedLocationClient.lastLocation.addOnCompleteListener {
@@ -73,7 +70,6 @@ class GPSLocationActivity : AppCompatActivity(), OnMapReadyCallback {
                 val stringRequest = StringRequest(Request.Method.GET, url, Response.Listener<String> { response ->
 
                     cityName = JSONObject(response).getString("name").toString()
-                    //gpsDescription.text = JSONObject(response).toString()
                     country = JSONObject(response).getJSONObject("sys").getString("country").toString()
 
                 }, Response.ErrorListener { Log.e("GPS", "Error in loading old locations") })
@@ -91,12 +87,6 @@ class GPSLocationActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_gpslocation)
-        /*
-         ACCESS_FINE_LOCATION
-         INTERNET
-         ACCESS_NETWORK_STATE
-         ACCESS_COARSE_LOCATION
-         */
 
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.mapView2) as SupportMapFragment

@@ -9,3 +9,7 @@ This activity includes use of https://openweathermap.org API for forecast inform
 ### Live Cam Activity
 
 Enjoy Korkeasaari's moongoose live cam! 
+
+### GPS Location Activity
+
+Has google map and SQLiteDataBase integrated. Search button uses the same api as th Weather Activity and locates the use in the map. Location is added to database and it loads onCreate() function. User can also longpress locations and they get added to the base too. If keeping data annoys the user it can all be wiped by Clear Database.
